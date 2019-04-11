@@ -17,51 +17,57 @@ DON'T WORK 4. Далее для каждого поста создаем див(
 
 fetch('https://jsonplaceholder.typicode.com/posts')
     //get posts
-    .then(function(response) {
-        let posts = response.json(); //posts type Promise
-        return posts;
-       })
+    .then(response => response.json())   
     //work for result 
-    .then(function(posts){
+    .then(posts => {
         console.log(posts); 
-        //alert(toString.call(posts));
-        
         //work for posts type Array
-        let filteredPosts = posts.filter(function(post){
-                //метод для удаления пробелов
-                let postTitle = post.title;
-                let titleWithoutSpaces = postTitle.replace(/\s/g, '');
-                //фильтрация
-                if(titleWithoutSpaces.length < 30) { return post; }
-            }
-        );
+        let filteredPosts = posts.filter(post =>{
+            //метод для удаления пробелов
+            let postTitle = post.title;
+            let titleWithoutSpaces = postTitle.replace(/\s/g, '');
+            //фильтрация
+            if(titleWithoutSpaces.length < 30) { return post; }
+        });
         console.log(filteredPosts);
         return filteredPosts;
     })
     //sort posts
-    .then(function(posts){
-        //func for sort descending
-        function sortArray(paramA, paramB){
-            if(paramB.id < paramA.id) 
-                { return -1;}
-            else if(paramB.id > paramA.id) 
-                { return 1;}
-            else 
-                { return 0;}
-        }
-        //work sort
-        posts.sort(sortArray);
+    .then(posts =>{
+        posts.sort((paramA, paramB) => paramB.id - paramA.id);
         console.log(posts);
         return posts;
     })
     //create div (don't work)
     .then(function(posts){
-        var divMain = document.createElement('div');
-        document.body.appendChild('div');
+        let divMain = document.createElement('div'); //create new DOM elem
         for(let i=0; i<posts.length; i++){
             let post = posts[i];
-            var div = document.createElement('div');
-            div.appendChild(document.createTextNode(post));
-            divMain.appendChild(div);
+            posts.currentTarget;
+            let postCont = document.createElement('div');
+            
+            const idUserDiv = document.createElement('div');
+            idUserDiv.innerText = ('\r{\r idUser: '+post.userId);
+            postCont.appendChild(idUserDiv);
+            
+            const idDiv = document.createElement('div');
+            idDiv.innerText = ('id: '+post.id);
+            postCont.appendChild(idDiv);
+            
+            const titleDiv = document.createElement('div');
+            titleDiv.innerText = ('title: '+post.title);
+            postCont.appendChild(titleDiv);
+            
+            const bodyDiv = document.createElement('div');
+            bodyDiv.innerText = ('body: '+post.body+'\r}');
+            postCont.appendChild(bodyDiv);
+            
+            function onClick(cl){
+                alert(post.title);
+            }
+            postCont.addEventListener('click', onClick);
+            divMain.appendChild(postCont);
         }
+        document.body.appendChild(divMain); //add div in document like child elem
+        //return posts;
     });
